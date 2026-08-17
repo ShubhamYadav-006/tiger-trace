@@ -5,7 +5,6 @@ import {
   Cpu,
   Cat,
   UserCheck,
-  Map,
   AlertTriangle,
 } from 'lucide-react';
 
@@ -40,11 +39,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: UserCheck,
       badge: pendingReviewsCount > 0 ? pendingReviewsCount : undefined,
       badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-    },
-    {
-      label: 'Reserve GIS Map',
-      path: '/map',
-      icon: Map,
     },
     {
       label: 'Movement Alerts',
