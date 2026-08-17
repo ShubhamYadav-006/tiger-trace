@@ -368,20 +368,124 @@ export const MOCK_ALERTS: MovementAlert[] = [
 
 export const MOCK_RUN: ProcessingRun = {
   id: 'RUN-20260817-01',
+  name: 'Karmajhiri Core Batch 08',
   folderPath: 'E:\\FieldData\\Pench_SDCard_Batch08',
   startTime: '2026-08-17T14:00:00Z',
+  endTime: '2026-08-17T14:38:20Z',
+  completionTime: '2026-08-17T14:38:20Z',
   status: 'COMPLETED',
   currentStage: 'COMPLETED',
   progressPercentage: 100,
   totalImages: 14250,
   processedImages: 14250,
   blankImagesCount: 11840,
+  subjectImagesCount: 2410,
   tigerDetectionsCount: 142,
+  quarantinedImagesCount: 11840,
+  errorCount: 0,
+  processingDurationSeconds: 2300,
   humanReviewRequiredCount: 2,
   alertsGeneratedCount: 2,
   storageSavedMB: 28420,
-  processingTimeSavedMinutes: 184
+  processingTimeSavedMinutes: 184,
+  errors: []
 };
+
+export const MOCK_RUNS: ProcessingRun[] = [
+  MOCK_RUN,
+  {
+    id: 'RUN-20260817-02',
+    name: 'Touria Buffer West Survey',
+    folderPath: 'E:\\FieldData\\Touria_Buffer_SD02',
+    startTime: '2026-08-17T15:00:00Z',
+    status: 'IN_PROGRESS',
+    currentStage: 'INDIVIDUAL_REID',
+    progressPercentage: 68,
+    totalImages: 8500,
+    processedImages: 5780,
+    blankImagesCount: 4620,
+    subjectImagesCount: 1160,
+    tigerDetectionsCount: 64,
+    quarantinedImagesCount: 4620,
+    errorCount: 1,
+    processingDurationSeconds: 1020,
+    humanReviewRequiredCount: 1,
+    alertsGeneratedCount: 1,
+    storageSavedMB: 11080,
+    processingTimeSavedMinutes: 72,
+    errors: [
+      {
+        id: 'ERR-101',
+        timestamp: '2026-08-17T15:08:12Z',
+        filename: 'IMG_9042_CORRUPT.JPG',
+        code: 'CORRUPTED_HEADER',
+        message: 'Unable to read image header metadata. Image skipped safely.'
+      }
+    ]
+  },
+  {
+    id: 'RUN-20260816-01',
+    name: 'Khawasa Ridge Routine Grid',
+    folderPath: 'E:\\FieldData\\Khawasa_Ridge_20260816',
+    startTime: '2026-08-16T09:15:00Z',
+    endTime: '2026-08-16T09:58:40Z',
+    completionTime: '2026-08-16T09:58:40Z',
+    status: 'COMPLETED',
+    currentStage: 'COMPLETED',
+    progressPercentage: 100,
+    totalImages: 12100,
+    processedImages: 12100,
+    blankImagesCount: 10150,
+    subjectImagesCount: 1950,
+    tigerDetectionsCount: 98,
+    quarantinedImagesCount: 10150,
+    errorCount: 0,
+    processingDurationSeconds: 2620,
+    humanReviewRequiredCount: 0,
+    alertsGeneratedCount: 1,
+    storageSavedMB: 24360,
+    processingTimeSavedMinutes: 160,
+    errors: []
+  },
+  {
+    id: 'RUN-20260815-03',
+    name: 'Gumtara Range Corrupt SD Card',
+    folderPath: 'E:\\FieldData\\Gumtara_North_SD04',
+    startTime: '2026-08-15T16:20:00Z',
+    endTime: '2026-08-15T16:22:15Z',
+    completionTime: '2026-08-15T16:22:15Z',
+    status: 'FAILED',
+    currentStage: 'FAILED',
+    progressPercentage: 12,
+    totalImages: 3400,
+    processedImages: 408,
+    blankImagesCount: 310,
+    subjectImagesCount: 98,
+    tigerDetectionsCount: 4,
+    quarantinedImagesCount: 310,
+    errorCount: 3,
+    processingDurationSeconds: 135,
+    humanReviewRequiredCount: 0,
+    alertsGeneratedCount: 0,
+    storageSavedMB: 740,
+    processingTimeSavedMinutes: 5,
+    errors: [
+      {
+        id: 'ERR-201',
+        timestamp: '2026-08-15T16:21:00Z',
+        filename: 'DCIM_0012.DAT',
+        code: 'UNSUPPORTED_FORMAT',
+        message: 'Non-standard binary file found in image folder.'
+      },
+      {
+        id: 'ERR-202',
+        timestamp: '2026-08-15T16:22:10Z',
+        code: 'I_O_READ_ERROR',
+        message: 'SD card read error: Sector corrupted on local drive.'
+      }
+    ]
+  }
+];
 
 export const MOCK_QUARANTINE: QuarantinedImage[] = [
   {

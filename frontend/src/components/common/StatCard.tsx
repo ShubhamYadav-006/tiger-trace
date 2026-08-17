@@ -7,7 +7,7 @@ interface StatCardProps {
   value: string | number;
   subtitle?: string;
   icon: LucideIcon;
-  color?: 'amber' | 'blue' | 'emerald' | 'red';
+  color?: 'amber' | 'blue' | 'emerald' | 'red' | 'orange' | 'purple';
   trend?: string;
 }
 
@@ -24,6 +24,8 @@ export const StatCard: React.FC<StatCardProps> = ({
     blue: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
     emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     red: 'bg-red-500/10 text-red-400 border-red-500/20',
+    orange: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+    purple: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
   };
 
   return (
