@@ -104,10 +104,10 @@ export const ProcessingPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-white font-heading tracking-tight">
-            Processing Runs & Ingestion Pipeline
+            Processing History & Ingestion Archive
           </h1>
           <p className="text-xs text-slate-400">
-            Batch process raw camera-trap SD card folders without cloud or internet connectivity.
+            Complete historical log of camera-trap batch processing runs and quarantined blank frame staging.
           </p>
         </div>
 
@@ -122,7 +122,7 @@ export const ProcessingPage: React.FC = () => {
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            Processing Runs ({runs.length})
+            Run History ({runs.length})
           </button>
           <button
             onClick={() => setActiveTab('QUARANTINE')}
@@ -147,7 +147,6 @@ export const ProcessingPage: React.FC = () => {
                 <FolderOpen className="w-4 h-4 text-amber-400" />
                 Start New Processing Batch
               </h2>
-              <span className="text-[11px] text-slate-400 font-mono">Offline Local Path</span>
             </div>
 
             <form onSubmit={handleStartRun} className="flex flex-col sm:flex-row gap-3">

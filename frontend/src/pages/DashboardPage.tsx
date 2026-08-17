@@ -10,11 +10,17 @@ import {
   FileCheck,
   RefreshCw,
   Clock,
+  FolderOpen,
+  History,
+  ArrowRight,
+  AlertCircle,
 } from 'lucide-react';
 import { StatCard } from '../components/common/StatCard';
+import { StatusBadge } from '../components/common/StatusBadge';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
 import { ErrorBanner } from '../components/common/ErrorBanner';
 import { useDashboard } from '../hooks/useDashboard';
+import { useRuns } from '../hooks/useRuns';
 import { getMovementAlerts } from '../services/alerts';
 import { getPendingReviews } from '../services/review';
 import type { MovementAlert } from '../types/alert';
@@ -22,7 +28,12 @@ import type { ReviewItem } from '../types/review';
 
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
-  const { stats, systemStatus, loading, error, refresh } = useDashboard();
+  const { stats, loading, error, refresh } = useDashboard();
+  const { runs, createRun, refresh: refreshRuns } = useRuns();
+
+  const [folderPath, setFolderPath] = useState('E:\\FieldData\\Pench_SDCard_Batch08');
+  const [isStarting, setIsStarting] = useState(false);
+  const [startError, setStartError] = useState<string | null>(null);
 
   const [alerts, setAlerts] = useState<MovementAlert[]>([]);
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
@@ -48,6 +59,24 @@ export const DashboardPage: React.FC = () => {
     loadSecondaryData();
   }, []);
 
+  const handleStartRun = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!folderPath.trim()) return;
+    setIsStarting(true);
+    setStartError(null);
+    try {
+      await createRun(folderPath.trim());
+      refreshRuns();
+    } catch (err) {
+      setStartError(err instanceof Error ? err.message : 'Failed to start processing batch');
+    } finally {
+      setIsStarting(false);
+    }
+  };
+
+  const activeRun = runs.find((r) => r.status === 'IN_PROGRESS');
+  const recentRuns = runs.slice(0, 3);
+
   const isLoading = loading || secondaryLoading;
 
   if (isLoading && !stats) {
@@ -69,44 +98,107 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Field System Header / Ingestion Launcher Banner */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-amber-950/30 to-slate-900 border border-slate-800 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-xl">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30 uppercase tracking-wider">
-              Field System Ready
-            </span>
-            <span className="text-xs text-slate-400 font-mono">Pench PTR Landscape</span>
-            {systemStatus?.isOfflineMode && (
-              <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full border border-slate-700">
-                CPU Offline Mode
-              </span>
-            )}
-          </div>
-          <h1 className="text-2xl font-extrabold text-white font-heading tracking-tight">
-            Offline Camera Trap & Tiger Intelligence Center
-          </h1>
-          <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
-            Automatically process field SD cards, isolate flank stripe patterns, update individual tiger records, map territorial occupancy, and trigger movement deviation alerts.
-          </p>
+
+
+      {/* Active Processing Engine & Ingestion Form Section */}
+      <div className="p-6 bg-slate-900 border border-slate-800 rounded-xl space-y-5 shadow-lg">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-white font-heading uppercase tracking-wider flex items-center gap-2">
+            <FolderOpen className="w-4 h-4 text-amber-400" />
+            Start New Camera Trap Ingestion Batch
+          </h2>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <form onSubmit={handleStartRun} className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <FolderOpen className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={folderPath}
+              onChange={(e) => setFolderPath(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-xs text-slate-200 font-mono focus:outline-none focus:border-amber-500/60"
+              placeholder="E:\FieldData\CameraTrap_Batch"
+              disabled={isStarting}
+            />
+          </div>
           <button
-            onClick={refresh}
-            className="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 transition-colors cursor-pointer"
-            title="Refresh Metrics"
+            type="submit"
+            disabled={isStarting || !folderPath.trim()}
+            className="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold text-xs rounded-lg shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
           >
-            <RefreshCw className="w-4 h-4" />
+            {isStarting ? (
+              <RefreshCw className="w-4 h-4 animate-spin" />
+            ) : (
+              <Play className="w-4 h-4 fill-current" />
+            )}
+            {isStarting ? 'Starting Ingestion...' : 'Start Ingestion Batch'}
           </button>
-          <button
-            onClick={() => navigate('/processing')}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition-all duration-200 cursor-pointer"
-          >
-            <Play className="w-4 h-4 fill-current" />
-            Start New SD-Card Ingestion
-          </button>
-        </div>
+        </form>
+
+        {startError && (
+          <p className="text-xs text-red-400 flex items-center gap-1">
+            <AlertCircle className="w-3.5 h-3.5" /> {startError}
+          </p>
+        )}
+
+        {/* Live Active Processing Status Widget */}
+        {activeRun ? (
+          <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <RefreshCw className="w-4 h-4 text-amber-400 animate-spin" />
+                <span className="text-xs font-bold text-white font-heading">
+                  Active Processing: {activeRun.name}
+                </span>
+                <span className="text-[10px] font-mono text-amber-400">({activeRun.id})</span>
+              </div>
+              <StatusBadge label={activeRun.status} variant="warning" size="sm" />
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-amber-300 font-medium">
+                  Pipeline Stage: {activeRun.currentStage}
+                </span>
+                <span className="text-white font-mono font-bold">{activeRun.progressPercentage}%</span>
+              </div>
+              <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+                <div
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-300"
+                  style={{ width: `${activeRun.progressPercentage}%` }}
+                ></div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 pt-1 text-[11px]">
+              <div>
+                <span className="text-slate-400">Total Frames:</span>{' '}
+                <span className="font-mono font-bold text-white">{activeRun.totalImages.toLocaleString()}</span>
+              </div>
+              <div>
+                <span className="text-slate-400">Blanks Filtered:</span>{' '}
+                <span className="font-mono font-bold text-emerald-400">{activeRun.blankImagesCount.toLocaleString()}</span>
+              </div>
+              <div>
+                <span className="text-slate-400">Tigers Detected:</span>{' '}
+                <span className="font-mono font-bold text-amber-400">{activeRun.tigerDetectionsCount}</span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+            <span className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Active Engine Idle — Standing by for camera-trap SD card batch ingestion.
+            </span>
+            <button
+              onClick={() => navigate('/processing')}
+              className="text-[11px] text-amber-400 hover:text-amber-300 flex items-center gap-1 font-medium transition-colors cursor-pointer"
+            >
+              <History className="w-3.5 h-3.5" /> View Processing History
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Row 1: Pipeline Image Processing Metrics */}
@@ -157,28 +249,82 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Row 2: Intelligence & Field Review Metrics */}
-      <div>
-        <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-          Individual Intelligence & Field Review
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <StatCard
-            title="Images Requiring Review"
-            value={stats ? stats.imagesRequiringReviewCount : reviews.length}
-            subtitle="Ambiguous Flank Matches"
-            icon={UserCheck}
-            color="purple"
-            trend="Confidence < 0.85"
-          />
-          <StatCard
-            title="Active Movement Alerts"
-            value={stats ? stats.activeAlertsCount : alerts.filter((a) => !a.isAcknowledged).length}
-            subtitle="Unacknowledged Deviations"
-            icon={AlertTriangle}
-            color="red"
-            trend="Actionable Field Signals"
-          />
+      {/* Row 2: Intelligence & Recent History Preview */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left: Intelligence & Field Review */}
+        <div className="lg:col-span-5 space-y-3">
+          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Field Review & Signal Signals
+          </h2>
+          <div className="grid grid-cols-1 gap-4">
+            <StatCard
+              title="Images Requiring Review"
+              value={stats ? stats.imagesRequiringReviewCount : reviews.length}
+              subtitle="Ambiguous Flank Matches"
+              icon={UserCheck}
+              color="purple"
+              trend="Confidence < 0.85"
+            />
+            <StatCard
+              title="Active Movement Alerts"
+              value={stats ? stats.activeAlertsCount : alerts.filter((a) => !a.isAcknowledged).length}
+              subtitle="Unacknowledged Deviations"
+              icon={AlertTriangle}
+              color="red"
+              trend="Actionable Field Signals"
+            />
+          </div>
+        </div>
+
+        {/* Right: Recent Ingestion Runs History */}
+        <div className="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4 shadow-lg flex flex-col justify-between">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                <History className="w-4 h-4 text-amber-400" />
+                Recent Ingestion Runs
+              </h2>
+              <span className="text-xs text-slate-400">{runs.length} Total Runs Saved</span>
+            </div>
+
+            <div className="space-y-2">
+              {recentRuns.map((r) => (
+                <div
+                  key={r.id}
+                  onClick={() => navigate('/processing')}
+                  className="p-3 bg-slate-950 border border-slate-800 rounded-lg hover:border-amber-500/40 transition-colors cursor-pointer flex items-center justify-between"
+                >
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-white">{r.name}</span>
+                      <StatusBadge
+                        label={r.status}
+                        variant={r.status === 'COMPLETED' ? 'success' : r.status === 'FAILED' ? 'critical' : 'warning'}
+                        size="sm"
+                      />
+                    </div>
+                    <p className="text-[11px] text-slate-400 font-mono">{r.folderPath}</p>
+                  </div>
+
+                  <div className="text-right flex items-center gap-3">
+                    <div className="text-xs font-mono">
+                      <span className="text-amber-400 font-bold">{r.tigerDetectionsCount}</span>{' '}
+                      <span className="text-slate-500">Tigers</span>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-slate-500" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={() => navigate('/processing')}
+            className="w-full py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-amber-300 border border-slate-700 transition-colors flex items-center justify-center gap-2 cursor-pointer mt-2"
+          >
+            <History className="w-4 h-4" />
+            Open Full Processing History & Quarantine Manager
+          </button>
         </div>
       </div>
     </div>
