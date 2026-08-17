@@ -1,0 +1,1 @@
+export { useTigers } from './useTigers';
