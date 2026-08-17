@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Cpu,
-  Cat,
   UserCheck,
   AlertTriangle,
 } from 'lucide-react';
@@ -27,11 +26,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Processing Run',
       path: '/processing',
       icon: Cpu,
-    },
-    {
-      label: 'Tiger Catalogue',
-      path: '/tigers',
-      icon: Cat,
     },
     {
       label: 'Human Review',
