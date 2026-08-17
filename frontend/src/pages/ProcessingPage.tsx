@@ -20,7 +20,7 @@ import type { QuarantinedImage, RunStatus } from '../types/run';
 export const ProcessingPage: React.FC = () => {
   const { runs, selectedRun, loading, error, selectRun, createRun, refresh } = useRuns();
 
-  const [folderPath, setFolderPath] = useState('E:\\FieldData\\Pench_SDCard_Batch08');
+  const [folderPath, setFolderPath] = useState('');
   const [quarantineList, setQuarantineList] = useState<QuarantinedImage[]>([]);
   const [quarantineLoading, setQuarantineLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'RUNS' | 'QUARANTINE'>('RUNS');

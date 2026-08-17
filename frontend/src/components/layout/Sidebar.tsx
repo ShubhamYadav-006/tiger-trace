@@ -13,8 +13,8 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
-  pendingReviewsCount = 2,
-  activeAlertsCount = 2,
+  pendingReviewsCount = 0,
+  activeAlertsCount = 0,
 }) => {
   const navItems = [
     {

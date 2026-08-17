@@ -5,8 +5,8 @@ import { Sidebar } from './Sidebar';
 import { getDashboardStats } from '../../services/dashboard';
 
 export const Layout: React.FC = () => {
-  const [activeAlertsCount, setActiveAlertsCount] = useState(2);
-  const [pendingReviewsCount, setPendingReviewsCount] = useState(2);
+  const [activeAlertsCount, setActiveAlertsCount] = useState(0);
+  const [pendingReviewsCount, setPendingReviewsCount] = useState(0);
 
   useEffect(() => {
     async function loadStats() {

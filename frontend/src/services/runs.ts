@@ -1,6 +1,6 @@
 import type { ProcessingRun, QuarantinedImage } from '../types/run';
 import { fetchApi } from './api';
-import { MOCK_RUN, MOCK_RUNS, MOCK_QUARANTINE } from './mockData';
+import { MOCK_RUNS, MOCK_QUARANTINE } from './mockData';
 
 export async function getAllRuns(): Promise<ProcessingRun[]> {
   try {
@@ -18,11 +18,11 @@ export async function getRunById(id: string): Promise<ProcessingRun | undefined>
   }
 }
 
-export async function getLatestRun(): Promise<ProcessingRun> {
+export async function getLatestRun(): Promise<ProcessingRun | undefined> {
   try {
     return await fetchApi<ProcessingRun>('/runs/latest');
   } catch {
-    return MOCK_RUNS[0] || MOCK_RUN;
+    return MOCK_RUNS[0];
   }
 }
 

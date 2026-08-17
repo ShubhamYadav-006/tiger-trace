@@ -27,7 +27,7 @@ export const DashboardPage: React.FC = () => {
   const { stats, loading, error, refresh } = useDashboard();
   const { runs, createRun, refresh: refreshRuns } = useRuns();
 
-  const [folderPath, setFolderPath] = useState('E:\\FieldData\\Pench_SDCard_Batch08');
+  const [folderPath, setFolderPath] = useState('');
   const [isStarting, setIsStarting] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);
 
@@ -208,7 +208,7 @@ export const DashboardPage: React.FC = () => {
                   ? 'Completed'
                   : activeRun.status === 'IN_PROGRESS'
                   ? 'Processing..'
-                  : '0'}
+                  : 'Please Upload to Start'}
               </span>
               <span className="text-white font-mono font-bold">{activeRun.progressPercentage}%</span>
             </div>
@@ -222,7 +222,7 @@ export const DashboardPage: React.FC = () => {
         ) : (
           <div className="p-4 bg-slate-950/60 border border-slate-800 rounded-xl space-y-2">
             <div className="flex items-center justify-between text-xs font-semibold">
-              <span className="text-slate-400">0</span>
+              <span className="text-slate-400">Please Upload to Start</span>
               <span className="text-slate-500 font-mono font-bold">0%</span>
             </div>
             <div className="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">

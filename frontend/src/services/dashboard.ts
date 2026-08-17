@@ -6,17 +6,17 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   try {
     return await fetchApi<DashboardStats>('/dashboard/stats');
   } catch {
-    // Return computed stats from mock data layer
+    // Return initial clean stats when no data exists yet
     return {
-      totalImagesProcessed: 42850,
-      blankImagesCount: 35120,
-      relevantSubjectImagesCount: 7730,
-      tigerImagesCount: 542,
+      totalImagesProcessed: 0,
+      blankImagesCount: 0,
+      relevantSubjectImagesCount: 0,
+      tigerImagesCount: 0,
       knownTigersCount: MOCK_TIGERS.length,
       imagesRequiringReviewCount: MOCK_REVIEWS.filter((r) => r.status === 'PENDING').length,
       activeAlertsCount: MOCK_ALERTS.filter((a) => !a.isAcknowledged).length,
-      storageSavedMB: 84200,
-      processingTimeSavedMinutes: 520,
+      storageSavedMB: 0,
+      processingTimeSavedMinutes: 0,
       lastUpdated: new Date().toISOString(),
     };
   }
