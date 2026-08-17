@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 export async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
   try {
@@ -17,7 +17,7 @@ export async function fetchApi<T>(endpoint: string, options?: RequestInit): Prom
     const data = await response.json();
     return data as T;
   } catch (error) {
-    console.warn(`[TigerTrace API] Backend fetch failed for ${endpoint}. Using offline fallback logic.`, error);
+    console.warn(`[TigerTrace API] Endpoint ${endpoint} unreachable. Operating in offline mode.`, error);
     throw error;
   }
 }
