@@ -113,7 +113,7 @@ export const TigerDetailPage: React.FC = () => {
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate('/tigers')}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-colors cursor-pointer"
+          className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white border border-stone-200 text-xs font-bold text-stone-700 hover:text-stone-900 hover:border-stone-300 transition-colors cursor-pointer shadow-2xs"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Catalogue
@@ -130,26 +130,26 @@ export const TigerDetailPage: React.FC = () => {
                 : 'critical'
             }
           />
-          <span className="text-xs font-mono text-slate-400 border-l border-slate-800 pl-3">
-            Catalogue ID: <strong className="text-amber-400">{tiger.id}</strong>
+          <span className="text-xs font-mono text-stone-500 border-l border-stone-200 pl-3">
+            Catalogue ID: <strong className="text-emerald-700">{tiger.id}</strong>
           </span>
         </div>
       </div>
 
       {/* SECTION 1: Identity & Reference Overview */}
       <section className="space-y-3">
-        <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <h2 className="text-xs font-extrabold text-stone-500 uppercase tracking-wider">
           Section 1: Individual Identity & Reference
         </h2>
-        <div className="p-6 bg-slate-900 border border-slate-800 rounded-2xl shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="p-6 bg-white border border-stone-200 rounded-2xl shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-6 text-stone-900">
           {/* Reference Image */}
-          <div className="lg:col-span-4 relative aspect-square lg:aspect-auto rounded-xl overflow-hidden bg-slate-950 border border-slate-800">
+          <div className="lg:col-span-4 relative aspect-square lg:aspect-auto rounded-xl overflow-hidden bg-stone-100 border border-stone-200">
             <img
               src={tiger.primaryImage}
               alt={tiger.name}
               className="w-full h-full object-cover"
             />
-            <div className="absolute top-3 left-3 px-2.5 py-1 rounded bg-slate-950/80 backdrop-blur-md border border-slate-700 text-[11px] font-mono font-bold text-amber-400">
+            <div className="absolute top-3 left-3 px-2.5 py-1 rounded bg-stone-900/80 backdrop-blur-md border border-stone-700 text-[11px] font-mono font-bold text-emerald-400">
               Primary Flank Reference
             </div>
           </div>
@@ -158,50 +158,50 @@ export const TigerDetailPage: React.FC = () => {
           <div className="lg:col-span-8 space-y-5 flex flex-col justify-between">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded text-xs font-bold bg-amber-500 text-slate-950">
+                <span className="px-2.5 py-0.5 rounded text-xs font-extrabold bg-emerald-600 text-white shadow-2xs">
                   {tiger.id}
                 </span>
-                <span className="text-xs text-slate-400 font-mono">Pench Reserve Individual Register</span>
+                <span className="text-xs text-stone-500 font-mono">Pench Reserve Individual Register</span>
               </div>
-              <h1 className="text-2xl font-extrabold text-white font-heading">{tiger.name}</h1>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h1 className="text-2xl font-extrabold text-stone-900 font-heading">{tiger.name}</h1>
+              <p className="text-xs text-stone-600 leading-relaxed">
                 Stripe pattern verified and enrolled in the persistent reserve catalogue. Re-identification based on flank feature extraction.
               </p>
             </div>
 
             {/* Required Field Metric Badges */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-              <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl">
-                <div className="text-slate-500 text-[10px] uppercase font-semibold">Gender & Age</div>
-                <div className="font-bold text-white mt-1">{tiger.gender} • {tiger.estimatedAge}</div>
+              <div className="p-3 bg-stone-50 border border-stone-200 rounded-xl">
+                <div className="text-stone-500 text-[10px] uppercase font-bold">Gender & Age</div>
+                <div className="font-bold text-stone-900 mt-1">{tiger.gender} • {tiger.estimatedAge}</div>
               </div>
-              <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl">
-                <div className="text-slate-500 text-[10px] uppercase font-semibold flex items-center gap-1">
-                  <Camera className="w-3 h-3 text-amber-400" /> Total Captures
+              <div className="p-3 bg-stone-50 border border-stone-200 rounded-xl">
+                <div className="text-stone-500 text-[10px] uppercase font-bold flex items-center gap-1">
+                  <Camera className="w-3 h-3 text-emerald-700" /> Total Captures
                 </div>
-                <div className="font-bold text-amber-400 font-mono mt-1">{tiger.totalCaptures} Frames</div>
+                <div className="font-bold text-emerald-700 font-mono mt-1">{tiger.totalCaptures} Frames</div>
               </div>
-              <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl">
-                <div className="text-slate-500 text-[10px] uppercase font-semibold flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-blue-400" /> First Seen Date
+              <div className="p-3 bg-stone-50 border border-stone-200 rounded-xl">
+                <div className="text-stone-500 text-[10px] uppercase font-bold flex items-center gap-1">
+                  <Calendar className="w-3 h-3 text-blue-600" /> First Seen Date
                 </div>
-                <div className="font-mono text-slate-200 mt-1">{formatDate(tiger.firstSeen)}</div>
+                <div className="font-mono text-stone-800 font-semibold mt-1">{formatDate(tiger.firstSeen)}</div>
               </div>
-              <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl">
-                <div className="text-slate-500 text-[10px] uppercase font-semibold flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-emerald-400" /> Last Seen Date
+              <div className="p-3 bg-stone-50 border border-stone-200 rounded-xl">
+                <div className="text-stone-500 text-[10px] uppercase font-bold flex items-center gap-1">
+                  <Calendar className="w-3 h-3 text-emerald-600" /> Last Seen Date
                 </div>
-                <div className="font-mono text-slate-200 mt-1">{formatDate(tiger.lastSeen)}</div>
+                <div className="font-mono text-stone-800 font-semibold mt-1">{formatDate(tiger.lastSeen)}</div>
               </div>
             </div>
 
             {/* Last Station Banner */}
-            <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl text-xs text-slate-300 flex items-center justify-between">
+            <div className="p-3 bg-stone-50 border border-stone-200 rounded-xl text-xs text-stone-700 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>Last Captured Station: <strong className="text-white">{tiger.lastStation}</strong></span>
+                <MapPin className="w-4 h-4 text-emerald-700 shrink-0" />
+                <span>Last Captured Station: <strong className="text-stone-900">{tiger.lastStation}</strong></span>
               </div>
-              <span className="text-[11px] font-mono text-slate-400">
+              <span className="text-[11px] font-mono text-stone-500">
                 {formatDateTime(tiger.lastSeen)}
               </span>
             </div>
@@ -211,55 +211,55 @@ export const TigerDetailPage: React.FC = () => {
 
       {/* SECTION 2: Spatial Intelligence, Occupancy & Camera Stations */}
       <section className="space-y-3">
-        <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <h2 className="text-xs font-extrabold text-stone-500 uppercase tracking-wider">
           Section 2: Spatial Intelligence & Territory Boundaries
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Spatial Metrics & Camera Stations List (4 cols) */}
           <div className="lg:col-span-4 space-y-4">
             {/* Occupied Area Card */}
-            <div className="p-5 bg-slate-900 border border-slate-800 rounded-xl space-y-3">
-              <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
+            <div className="p-5 bg-white border border-stone-200 rounded-xl space-y-3 shadow-xs">
+              <div className="flex items-center gap-2 text-emerald-700 text-xs font-bold uppercase tracking-wider">
                 <Compass className="w-4 h-4" /> Estimated Occupied Area
               </div>
-              <div className="text-3xl font-extrabold text-white font-mono">
-                {tiger.occupiedAreaSqKm} <span className="text-base text-slate-400 font-sans">sq km</span>
+              <div className="text-3xl font-extrabold text-stone-900 font-mono">
+                {tiger.occupiedAreaSqKm} <span className="text-base text-stone-500 font-sans">sq km</span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
+              <p className="text-[11px] text-stone-600 leading-relaxed">
                 Calculated from camera station detection points. Core range threshold: 15–20 sq km.
               </p>
             </div>
 
             {/* Activity Centroid Card */}
-            <div className="p-5 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
-              <div className="flex items-center gap-2 text-blue-400 text-xs font-bold uppercase tracking-wider">
+            <div className="p-5 bg-white border border-stone-200 rounded-xl space-y-2 shadow-xs">
+              <div className="flex items-center gap-2 text-blue-700 text-xs font-bold uppercase tracking-wider">
                 <Radio className="w-4 h-4" /> Activity Centroid Location
               </div>
-              <div className="text-sm font-bold text-white font-mono">
+              <div className="text-sm font-bold text-stone-900 font-mono">
                 {tiger.centroid.latitude.toFixed(4)}° N, {tiger.centroid.longitude.toFixed(4)}° E
               </div>
-              <div className="text-xs text-slate-300 font-medium">{tiger.centroid.zoneName} Zone</div>
+              <div className="text-xs text-stone-600 font-medium">{tiger.centroid.zoneName} Zone</div>
             </div>
 
             {/* Stations Used List */}
-            <div className="p-5 bg-slate-900 border border-slate-800 rounded-xl space-y-3">
+            <div className="p-5 bg-white border border-stone-200 rounded-xl space-y-3 shadow-xs">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-emerald-400" />
+                <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-emerald-700" />
                   Camera Stations Used ({uniqueStations.length})
                 </h3>
               </div>
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                 {uniqueStations.length === 0 ? (
-                  <div className="text-xs text-slate-500">No station records found.</div>
+                  <div className="text-xs text-stone-400">No station records found.</div>
                 ) : (
                   uniqueStations.map((stName, idx) => (
                     <div
                       key={idx}
-                      className="p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs flex items-center justify-between text-slate-200"
+                      className="p-2.5 bg-stone-50 border border-stone-200 rounded-lg text-xs flex items-center justify-between text-stone-800"
                     >
                       <span className="font-semibold truncate">{stName}</span>
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                     </div>
                   ))
                 )}
@@ -268,12 +268,12 @@ export const TigerDetailPage: React.FC = () => {
           </div>
 
           {/* Interactive Territory & Trajectory Map (8 cols) */}
-          <div className="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3 shadow-xl">
+          <div className="lg:col-span-8 bg-white border border-stone-200 rounded-xl p-5 space-y-3 shadow-xs">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white font-heading">
+              <h3 className="text-sm font-extrabold text-stone-900 font-heading">
                 Reserve Trajectory & Occupancy GIS Map
               </h3>
-              <span className="text-[11px] text-amber-400 font-mono">Territory Polygon + Trail Active</span>
+              <span className="text-[11px] text-emerald-700 font-mono font-bold">Territory Polygon + Trail Active</span>
             </div>
             <ReserveMap
               stations={[]}
@@ -290,18 +290,18 @@ export const TigerDetailPage: React.FC = () => {
 
       {/* SECTION 3: Capture Audit History Table */}
       <section className="space-y-3">
-        <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <h2 className="text-xs font-extrabold text-stone-500 uppercase tracking-wider">
           Section 3: Complete Capture Audit History ({captures.length} Observations)
         </h2>
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div className="bg-white border border-stone-200 rounded-2xl overflow-hidden shadow-xs">
           {captures.length === 0 ? (
-            <div className="p-8 text-center text-xs text-slate-400">
+            <div className="p-8 text-center text-xs text-stone-500">
               No historical capture frames registered for this tiger yet.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-950 text-slate-400 uppercase font-semibold border-b border-slate-800">
+                <thead className="bg-stone-50 text-stone-700 uppercase font-extrabold border-b border-stone-200">
                   <tr>
                     <th className="p-3.5">Flank Crop</th>
                     <th className="p-3.5">Camera Station</th>
@@ -311,30 +311,30 @@ export const TigerDetailPage: React.FC = () => {
                     <th className="p-3.5">Audit Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/80 text-slate-200">
+                <tbody className="divide-y divide-stone-200 text-stone-800">
                   {captures.map((cap) => (
-                    <tr key={cap.id} className="hover:bg-slate-950/60 transition-colors">
+                    <tr key={cap.id} className="hover:bg-stone-50/80 transition-colors">
                       <td className="p-3.5">
                         <img
                           src={cap.flankCropUrl || cap.imageUrl}
                           alt="Flank"
-                          className="w-14 h-11 rounded-lg object-cover border border-slate-700 bg-slate-950"
+                          className="w-14 h-11 rounded-lg object-cover border border-stone-200 bg-stone-100"
                         />
                       </td>
-                      <td className="p-3.5 font-bold text-white">{cap.stationName}</td>
-                      <td className="p-3.5 font-mono text-slate-400">
+                      <td className="p-3.5 font-bold text-stone-900">{cap.stationName}</td>
+                      <td className="p-3.5 font-mono text-stone-600">
                         {formatDateTime(cap.timestamp)}
                       </td>
-                      <td className="p-3.5 font-mono text-slate-300">
+                      <td className="p-3.5 font-mono text-stone-700">
                         {cap.latitude.toFixed(4)}° N, {cap.longitude.toFixed(4)}° E
                       </td>
                       <td className="p-3.5 font-mono">
-                        <span className="font-bold text-emerald-400">
+                        <span className="font-bold text-emerald-700">
                           {Math.round(cap.confidence * 100)}% Match
                         </span>
                       </td>
                       <td className="p-3.5">
-                        <span className="px-2.5 py-1 rounded text-[10px] font-bold bg-slate-950 text-emerald-400 border border-emerald-500/30">
+                        <span className="px-2.5 py-1 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
                           {cap.reviewStatus}
                         </span>
                       </td>
@@ -349,11 +349,11 @@ export const TigerDetailPage: React.FC = () => {
 
       {/* SECTION 4: Related Movement Deviations & Alerts */}
       <section className="space-y-3">
-        <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <h2 className="text-xs font-extrabold text-stone-500 uppercase tracking-wider">
           Section 4: Related Movement Deviations & Field Alerts ({alerts.length})
         </h2>
         {alerts.length === 0 ? (
-          <div className="p-6 bg-slate-900 border border-slate-800 rounded-xl text-center text-xs text-slate-400">
+          <div className="p-6 bg-white border border-stone-200 rounded-xl text-center text-xs text-stone-500 shadow-2xs">
             No active movement deviations flagged for {tiger.id} ({tiger.name}).
           </div>
         ) : (
@@ -361,12 +361,12 @@ export const TigerDetailPage: React.FC = () => {
             {alerts.map((alt) => (
               <div
                 key={alt.id}
-                className="p-5 bg-slate-900 border border-slate-800 rounded-xl space-y-3 shadow-lg hover:border-red-500/40 transition-colors"
+                className="p-5 bg-white border border-stone-200 rounded-xl space-y-3 shadow-xs hover:border-rose-300 transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <ShieldAlert className="w-4 h-4 text-red-400" />
-                    <span className="text-xs font-mono font-bold text-amber-400">{alt.type}</span>
+                    <ShieldAlert className="w-4 h-4 text-rose-600" />
+                    <span className="text-xs font-mono font-bold text-emerald-700">{alt.type}</span>
                   </div>
                   <StatusBadge
                     label={alt.severity}
@@ -375,23 +375,23 @@ export const TigerDetailPage: React.FC = () => {
                   />
                 </div>
 
-                <h3 className="text-sm font-bold text-white font-heading">{alt.title}</h3>
+                <h3 className="text-sm font-bold text-stone-900 font-heading">{alt.title}</h3>
 
-                <div className="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs space-y-1.5 text-slate-300">
+                <div className="p-3 bg-stone-50 rounded-lg border border-stone-200 text-xs space-y-1.5 text-stone-800">
                   <div><strong>Evidence:</strong> {alt.evidence.whatChanged}</div>
                   <div><strong>Previous State:</strong> {alt.evidence.previousState}</div>
                   <div><strong>Current State:</strong> {alt.evidence.currentState}</div>
-                  <div className="flex items-center justify-between pt-1 border-t border-slate-800/80 text-[11px]">
-                    <span className="text-slate-400">Station: {alt.stationName}</span>
-                    <span className="font-mono text-emerald-400 font-bold">Confidence: {alt.evidence.confidenceLevel}</span>
+                  <div className="flex items-center justify-between pt-1 border-t border-stone-200 text-[11px]">
+                    <span className="text-stone-500">Station: {alt.stationName}</span>
+                    <span className="font-mono text-emerald-700 font-bold">Confidence: {alt.evidence.confidenceLevel}</span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+                <div className="flex items-center justify-between text-[11px] text-stone-500 pt-1">
                   <span>Detected: {formatDateTime(alt.timestamp)}</span>
                   <button
                     onClick={() => navigate('/alerts')}
-                    className="text-amber-400 hover:underline font-semibold cursor-pointer"
+                    className="text-emerald-700 hover:text-emerald-900 hover:underline font-bold cursor-pointer"
                   >
                     View Alert Evidence Center →
                   </button>

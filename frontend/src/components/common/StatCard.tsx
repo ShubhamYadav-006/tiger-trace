@@ -20,18 +20,18 @@ export const StatCard: React.FC<StatCardProps> = ({
   trend,
 }) => {
   const colorStyles = {
-    amber: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    blue: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    red: 'bg-red-500/10 text-red-400 border-red-500/20',
-    orange: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
-    purple: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+    amber: 'bg-amber-50 text-amber-700 border-amber-200/80',
+    blue: 'bg-blue-50 text-blue-700 border-blue-200/80',
+    emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200/80',
+    red: 'bg-rose-50 text-rose-700 border-rose-200/80',
+    orange: 'bg-orange-50 text-orange-700 border-orange-200/80',
+    purple: 'bg-purple-50 text-purple-700 border-purple-200/80',
   };
 
   return (
-    <div className="p-5 bg-slate-900 border border-slate-800 rounded-xl space-y-3 shadow-lg hover:border-slate-700 transition-all">
+    <div className="p-5 bg-slate-50/90 border border-slate-300/80 rounded-xl space-y-3 shadow-xs hover:border-emerald-500 transition-all">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider font-heading">
+        <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider font-heading">
           {title}
         </span>
         <div
@@ -45,16 +45,16 @@ export const StatCard: React.FC<StatCardProps> = ({
       </div>
 
       <div>
-        <div className="text-2xl font-extrabold text-white font-mono tracking-tight">
+        <div className="text-2xl font-extrabold text-stone-900 font-mono tracking-tight">
           {value}
         </div>
         {subtitle && (
-          <div className="text-[11px] text-slate-400 mt-0.5">{subtitle}</div>
+          <div className="text-[11px] text-stone-500 mt-0.5">{subtitle}</div>
         )}
       </div>
 
       {trend && (
-        <div className="pt-2 border-t border-slate-800 text-[11px] text-amber-400/90 font-medium">
+        <div className="pt-2 border-t border-stone-100 text-[11px] text-emerald-700 font-medium">
           {trend}
         </div>
       )}

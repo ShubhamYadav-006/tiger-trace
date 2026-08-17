@@ -32,21 +32,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
       path: '/review',
       icon: UserCheck,
       badge: pendingReviewsCount > 0 ? pendingReviewsCount : undefined,
-      badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+      badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
     },
     {
       label: 'Movement Alerts',
       path: '/alerts',
       icon: AlertTriangle,
       badge: activeAlertsCount > 0 ? activeAlertsCount : undefined,
-      badgeColor: 'bg-red-500/20 text-red-300 border-red-500/30',
+      badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
     },
   ];
 
   return (
-    <aside className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col select-none">
+    <aside className="w-64 bg-white border-r border-stone-300 flex flex-col select-none shadow-xs">
       <div className="p-4 space-y-1">
-        <nav className="space-y-1">
+        <nav className="space-y-1.5">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -54,10 +54,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  `flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-sm'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                      ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20 font-semibold'
+                      : 'text-stone-600 hover:text-emerald-800 hover:bg-emerald-50/60'
                   }`
                 }
               >

@@ -11,6 +11,7 @@ import {
   Clock,
   AlertCircle,
   Upload,
+  X,
 } from 'lucide-react';
 import { StatCard } from '../components/common/StatCard';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
@@ -135,11 +136,11 @@ export const DashboardPage: React.FC = () => {
 
 
       {/* Active Processing Engine & Ingestion Form Section */}
-      <div className="p-6 bg-slate-900 border border-slate-800 rounded-xl space-y-5 shadow-lg">
+      <div className="p-6 bg-slate-50/90 border border-slate-300/80 rounded-xl space-y-5 shadow-xs">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-white font-heading uppercase tracking-wider flex items-center gap-2">
-            <div className="w-20 h-20 flex items-center justify-center -ml-2">
-              <img src="/logo.png" alt="TigerTrace Logo" className="w-full h-full object-contain scale-150" />
+          <h2 className="text-sm font-extrabold text-stone-900 font-heading uppercase tracking-wider flex items-center gap-2">
+            <div className="w-16 h-16 flex items-center justify-center -ml-2">
+              <img src="/logo.png" alt="TigerTrace Logo" className="w-full h-full object-contain scale-125" />
             </div>
             Import Camera Images
           </h2>
@@ -156,52 +157,67 @@ export const DashboardPage: React.FC = () => {
             directory=""
           />
 
-          <div className="flex-1 flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-lg p-1.5 focus-within:border-amber-500/60 transition-colors">
+          <div className="flex-1 flex items-center gap-2 bg-stone-50 border border-stone-300 rounded-lg p-1.5 focus-within:border-emerald-600 transition-colors">
             <button
               type="button"
               onClick={handleUploadClick}
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 font-semibold text-xs rounded-md border border-slate-700 flex items-center gap-2 transition-colors cursor-pointer shrink-0 shadow-sm"
+              className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold text-xs rounded-md border border-emerald-200/80 flex items-center gap-2 transition-colors cursor-pointer shrink-0 shadow-2xs"
             >
-              <Upload className="w-3.5 h-3.5" />
+              <Upload className="w-4 h-4 text-emerald-700" />
               Upload folder
             </button>
             <input
               type="text"
               value={folderPath}
               onChange={(e) => setFolderPath(e.target.value)}
-              className="w-full bg-transparent border-none py-1 px-2 text-xs text-slate-200 font-mono focus:outline-none placeholder:text-slate-600"
+              className="w-full bg-transparent border-none py-1.5 px-2 text-sm text-stone-900 font-mono font-medium focus:outline-none placeholder:text-stone-400"
               placeholder="Select folder or enter path e.g. E:\FieldData\Batch08"
               disabled={isStarting}
             />
+            {folderPath && (
+              <button
+                type="button"
+                onClick={() => {
+                  setFolderPath('');
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                  }
+                }}
+                className="p-1 hover:bg-stone-200 text-stone-400 hover:text-stone-700 rounded-md transition-colors mr-1 cursor-pointer shrink-0"
+                title="Clear selected folder"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
           <button
             type="submit"
             disabled={isStarting || !folderPath.trim()}
-            className="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold text-xs rounded-lg shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+            className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-sm shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
           >
             {isStarting ? (
               <RefreshCw className="w-4 h-4 animate-spin" />
             ) : (
               <Play className="w-4 h-4 fill-current" />
             )}
-            {isStarting ? 'Starting Ingestion...' : 'Start Ingestion Batch'}
+            {isStarting ? 'Starting Sorting...' : 'Start Sorting'}
           </button>
         </form>
 
         {startError && (
-          <p className="text-xs text-red-400 flex items-center gap-1">
+          <p className="text-xs text-rose-600 flex items-center gap-1 font-medium">
             <AlertCircle className="w-3.5 h-3.5" /> {startError}
           </p>
         )}
 
         {/* Live Active Processing Status Widget */}
         {activeRun ? (
-          <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl space-y-2">
+          <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
             <div className="flex items-center justify-between text-xs font-semibold">
-              <span className="text-amber-400 flex items-center gap-2">
+              <span className="text-emerald-800 flex items-center gap-2">
                 {activeRun.status === 'IN_PROGRESS' && (
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-amber-400" />
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-600" />
                 )}
                 {activeRun.status === 'COMPLETED'
                   ? 'Completed'
@@ -209,23 +225,23 @@ export const DashboardPage: React.FC = () => {
                   ? 'Processing..'
                   : 'Please Upload to Start'}
               </span>
-              <span className="text-white font-mono font-bold">{activeRun.progressPercentage}%</span>
+              <span className="text-emerald-900 font-mono font-bold">{activeRun.progressPercentage}%</span>
             </div>
-            <div className="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
+            <div className="w-full bg-emerald-100 rounded-full h-2.5 overflow-hidden border border-emerald-200">
               <div
-                className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-emerald-500 to-green-600 h-full rounded-full transition-all duration-300"
                 style={{ width: `${activeRun.progressPercentage}%` }}
               ></div>
             </div>
           </div>
         ) : (
-          <div className="p-4 bg-slate-950/60 border border-slate-800 rounded-xl space-y-2">
+          <div className="p-4 bg-stone-50 border border-stone-200 rounded-xl space-y-2">
             <div className="flex items-center justify-between text-xs font-semibold">
-              <span className="text-slate-400">Please Upload to Start</span>
-              <span className="text-slate-500 font-mono font-bold">0%</span>
+              <span className="text-stone-500">Please Upload to Start</span>
+              <span className="text-stone-400 font-mono font-bold">0%</span>
             </div>
-            <div className="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
-              <div className="bg-slate-800 h-full rounded-full w-0"></div>
+            <div className="w-full bg-stone-200 rounded-full h-2.5 overflow-hidden border border-stone-300">
+              <div className="bg-stone-400 h-full rounded-full w-0"></div>
             </div>
           </div>
         )}
@@ -234,11 +250,11 @@ export const DashboardPage: React.FC = () => {
       {/* Row 1: Pipeline Image Processing Metrics */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <h2 className="text-xs font-bold text-stone-600 uppercase tracking-wider">
             Image Ingestion & Processing Metrics
           </h2>
           {stats?.lastUpdated && (
-            <span className="text-[11px] text-slate-400 flex items-center gap-1">
+            <span className="text-[11px] text-stone-500 flex items-center gap-1 font-medium">
               <Clock className="w-3 h-3" /> Updated: {new Date(stats.lastUpdated).toLocaleTimeString()}
             </span>
           )}
@@ -277,7 +293,7 @@ export const DashboardPage: React.FC = () => {
 
       {/* Row 2: Intelligence & Field Review */}
       <div>
-        <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+        <h2 className="text-xs font-bold text-stone-600 uppercase tracking-wider mb-3">
           Field Review & Signal Signals
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

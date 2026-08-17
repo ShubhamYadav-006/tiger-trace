@@ -22,11 +22,11 @@ export const Layout: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-stone-200/70 text-stone-900 flex flex-col">
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar pendingReviewsCount={pendingReviewsCount} activeAlertsCount={activeAlertsCount} />
-        <main className="flex-1 p-6 overflow-y-auto max-h-[calc(100vh-6rem)] bg-slate-950">
+        <main className="flex-1 p-6 overflow-y-auto max-h-[calc(100vh-6rem)] bg-stone-200/70">
           <Outlet />
         </main>
       </div>

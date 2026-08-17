@@ -22,7 +22,7 @@ export const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className={`w-full bg-slate-900 border border-slate-800 rounded-xl ${getSkeletonHeight()}`}
+          className={`w-full bg-stone-200/60 border border-stone-200 rounded-xl ${getSkeletonHeight()}`}
         ></div>
       ))}
     </div>
