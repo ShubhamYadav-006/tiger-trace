@@ -1,15 +1,7 @@
 import React from 'react';
-import { WifiOff, Cpu, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
-interface HeaderProps {
-  activeAlertsCount?: number;
-  isBackendConnected?: boolean;
-}
-
-export const Header: React.FC<HeaderProps> = ({
-  activeAlertsCount = 2,
-  isBackendConnected = false,
-}) => {
+export const Header: React.FC = () => {
   return (
     <header className="h-16 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-30">
       <div className="flex items-center gap-3">
@@ -26,39 +18,6 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </div>
           <p className="text-xs text-slate-400">Offline Camera Trap & Individual Tiger Intelligence</p>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-4">
-        {/* Offline Operation Indicator */}
-        <div className="flex items-center gap-2 text-xs bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-full text-slate-300">
-          <WifiOff className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="font-medium">Offline Mode</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        </div>
-
-        {/* CPU Engine Status */}
-        <div className="hidden md:flex items-center gap-2 text-xs bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-full text-slate-300">
-          <Cpu className="w-3.5 h-3.5 text-amber-400" />
-          <span>Local CPU Runtime</span>
-        </div>
-
-        {/* Alerts Pill */}
-        {activeAlertsCount > 0 && (
-          <div className="flex items-center gap-1.5 text-xs bg-red-500/10 border border-red-500/30 px-3 py-1.5 rounded-full text-red-400 font-medium">
-            <AlertTriangle className="w-3.5 h-3.5 text-red-400 animate-bounce" />
-            <span>{activeAlertsCount} Active Deviations</span>
-          </div>
-        )}
-
-        {/* Backend Connection Indicator */}
-        <div className="text-xs text-slate-400 flex items-center gap-1.5">
-          <span
-            className={`w-2 h-2 rounded-full ${
-              isBackendConnected ? 'bg-emerald-500' : 'bg-amber-500'
-            }`}
-          ></span>
-          <span>{isBackendConnected ? 'Backend Connected' : 'Offline Storage Active'}</span>
         </div>
       </div>
     </header>
