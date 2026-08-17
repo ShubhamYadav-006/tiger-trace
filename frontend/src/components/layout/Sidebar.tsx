@@ -56,7 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <aside className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between select-none">
+    <aside className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col select-none">
       <div className="p-4 space-y-1">
         <div className="px-3 py-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
           Core Navigation
@@ -91,19 +91,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             );
           })}
         </nav>
-      </div>
-
-      {/* Field System Info Footer */}
-      <div className="p-4 border-t border-slate-800/80 bg-slate-950/60">
-        <div className="bg-slate-900/80 border border-slate-800 rounded-lg p-3 space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-slate-300">
-            <span className="font-semibold text-slate-200">Reserve Territory</span>
-            <span className="text-amber-400 font-mono text-[11px]">Pench PTR</span>
-          </div>
-          <p className="text-[11px] text-slate-400 leading-tight">
-            Central India Landscape • Standard SD-Card Batch Processing
-          </p>
-        </div>
       </div>
     </aside>
   );
