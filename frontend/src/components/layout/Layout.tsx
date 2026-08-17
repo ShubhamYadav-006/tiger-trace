@@ -26,7 +26,7 @@ export const Layout: React.FC = () => {
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar pendingReviewsCount={pendingReviewsCount} activeAlertsCount={activeAlertsCount} />
-        <main className="flex-1 p-6 overflow-y-auto max-h-[calc(100vh-4rem)] bg-slate-950">
+        <main className="flex-1 p-6 overflow-y-auto max-h-[calc(100vh-6rem)] bg-slate-950">
           <Outlet />
         </main>
       </div>
