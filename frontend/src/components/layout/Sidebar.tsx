@@ -46,9 +46,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col select-none">
       <div className="p-4 space-y-1">
-        <div className="px-3 py-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-          Core Navigation
-        </div>
         <nav className="space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
