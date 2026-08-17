@@ -138,8 +138,8 @@ export const DashboardPage: React.FC = () => {
       <div className="p-6 bg-slate-900 border border-slate-800 rounded-xl space-y-5 shadow-lg">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-white font-heading uppercase tracking-wider flex items-center gap-2">
-            <div className="w-5 h-5 rounded bg-amber-500/20 border border-amber-500/30 flex items-center justify-center shadow-sm overflow-hidden p-0.5">
-              <img src="/logo.png" alt="TigerTrace Logo" className="w-full h-full object-contain rounded" />
+            <div className="w-6 h-6 flex items-center justify-center">
+              <img src="/logo.png" alt="TigerTrace Logo" className="w-full h-full object-contain" />
             </div>
             Import Camera Images
           </h2>
