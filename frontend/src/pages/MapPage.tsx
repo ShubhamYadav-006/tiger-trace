@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Compass, Filter } from 'lucide-react';
+import { Compass, Filter, Layers, Camera, Radio, Route } from 'lucide-react';
 import { ReserveMap } from '../components/map/ReserveMap';
-import { getTigers, getTerritoryOverlaps } from '../services/tigers';
+import { getTigers, getTigerCaptures, getTerritoryOverlaps } from '../services/tigers';
 import { getCameraStations } from '../services/gis';
-import type { Tiger, CameraStation, TerritoryOverlap } from '../types/tiger';
+import type { Tiger, CameraStation, TerritoryOverlap, TigerCapture } from '../types/tiger';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
 
 export const MapPage: React.FC = () => {
@@ -11,8 +11,10 @@ export const MapPage: React.FC = () => {
   const [stations, setStations] = useState<CameraStation[]>([]);
   const [overlaps, setOverlaps] = useState<TerritoryOverlap[]>([]);
   const [selectedTigerId, setSelectedTigerId] = useState<string>('ALL');
+  const [selectedTigerCaptures, setSelectedTigerCaptures] = useState<TigerCapture[]>([]);
   const [showStations, setShowStations] = useState(true);
   const [showOccupancy, setShowOccupancy] = useState(true);
+  const [showMovementTrail, setShowMovementTrail] = useState(true);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,6 +28,8 @@ export const MapPage: React.FC = () => {
         setTigers(tData);
         setStations(sData);
         setOverlaps(oData);
+      } catch (err) {
+        console.error('Failed to load GIS map data', err);
       } finally {
         setLoading(false);
       }
@@ -33,35 +37,55 @@ export const MapPage: React.FC = () => {
     loadGisData();
   }, []);
 
+  // Fetch captures when a specific tiger is selected
+  useEffect(() => {
+    async function loadCaptures() {
+      if (selectedTigerId === 'ALL') {
+        setSelectedTigerCaptures([]);
+        return;
+      }
+      try {
+        const caps = await getTigerCaptures(selectedTigerId);
+        setSelectedTigerCaptures(caps);
+      } catch (err) {
+        console.error(`Failed to load captures for ${selectedTigerId}`, err);
+        setSelectedTigerCaptures([]);
+      }
+    }
+    loadCaptures();
+  }, [selectedTigerId]);
+
   const displayedTigers =
     selectedTigerId === 'ALL'
       ? tigers
       : tigers.filter((t) => t.id === selectedTigerId);
 
+  const selectedTiger = tigers.find((t) => t.id === selectedTigerId);
+
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Header & Map Controls */}
+    <div className="space-y-6">
+      {/* Header Bar & Map Controls */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-white font-heading tracking-tight">
-            Reserve GIS Occupancy & Territory Explorer
+            Reserve GIS Map & Trajectory Explorer
           </h1>
           <p className="text-xs text-slate-400">
-            Interactive spatial visualization of camera stations, activity centroids, occupied areas, and territory overlaps.
+            Spatial visualization of camera stations, activity centroids, occupied areas, and chronological movement paths.
           </p>
         </div>
 
-        {/* Filter Bar */}
+        {/* Filter & Toggle Controls Bar */}
         <div className="flex flex-wrap items-center gap-3">
-          {/* Tiger Selector */}
+          {/* Tiger Selection Dropdown */}
           <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-300">
             <Filter className="w-3.5 h-3.5 text-slate-500" />
             <select
               value={selectedTigerId}
               onChange={(e) => setSelectedTigerId(e.target.value)}
-              className="bg-transparent focus:outline-none text-xs text-slate-200 cursor-pointer"
+              className="bg-transparent focus:outline-none text-xs text-slate-200 cursor-pointer font-medium"
             >
-              <option value="ALL" className="bg-slate-900">All Individual Tigers</option>
+              <option value="ALL" className="bg-slate-900">All Reserve Tigers ({tigers.length})</option>
               {tigers.map((t) => (
                 <option key={t.id} value={t.id} className="bg-slate-900">
                   {t.id} — {t.name}
@@ -70,44 +94,89 @@ export const MapPage: React.FC = () => {
             </select>
           </div>
 
-          {/* Toggle Switches */}
+          {/* Layer Toggle Switches */}
           <div className="flex bg-slate-900 border border-slate-800 rounded-lg p-1 text-xs">
             <button
               onClick={() => setShowStations(!showStations)}
-              className={`px-3 py-1.5 rounded-md font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
                 showStations ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'text-slate-400'
               }`}
             >
+              <Camera className="w-3.5 h-3.5" />
               Stations ({stations.length})
             </button>
             <button
               onClick={() => setShowOccupancy(!showOccupancy)}
-              className={`px-3 py-1.5 rounded-md font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
                 showOccupancy ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'text-slate-400'
               }`}
             >
+              <Radio className="w-3.5 h-3.5" />
               Centroids & Areas
+            </button>
+            <button
+              onClick={() => setShowMovementTrail(!showMovementTrail)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
+                showMovementTrail ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' : 'text-slate-400'
+              }`}
+            >
+              <Route className="w-3.5 h-3.5" />
+              Movement Trail
             </button>
           </div>
         </div>
       </div>
 
       {loading ? (
-        <LoadingSkeleton count={1} height="h-[550px]" />
+        <LoadingSkeleton type="card" count={1} height="h-[560px]" />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Main Map */}
-          <div className="lg:col-span-9">
+          {/* Left / Center Column: GIS Map (9 cols) */}
+          <div className="lg:col-span-9 space-y-4">
             <ReserveMap
               stations={stations}
               tigers={displayedTigers}
-              height="h-[560px]"
+              selectedTigerCaptures={selectedTigerCaptures}
+              height="h-[580px]"
               showStations={showStations}
               showOccupancy={showOccupancy}
+              showMovementTrail={showMovementTrail}
             />
+
+            {/* Selected Tiger Active Metadata Strip */}
+            {selectedTiger && (
+              <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl flex flex-wrap items-center justify-between gap-4 text-xs">
+                <div className="flex items-center gap-3">
+                  <span className="px-2.5 py-1 rounded bg-amber-500 text-slate-950 font-bold font-mono">
+                    {selectedTiger.id}
+                  </span>
+                  <div>
+                    <h4 className="font-bold text-white text-sm">{selectedTiger.name}</h4>
+                    <span className="text-[11px] text-slate-400">
+                      {selectedTiger.gender} • {selectedTiger.estimatedAge}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-6 font-mono text-slate-300">
+                  <div>
+                    <span className="text-[10px] text-slate-500 uppercase block">Occupied Range</span>
+                    <strong className="text-amber-400">{selectedTiger.occupiedAreaSqKm} sq km</strong>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-500 uppercase block">Centroid Zone</span>
+                    <strong className="text-white">{selectedTiger.centroid.zoneName}</strong>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-500 uppercase block">Captures Trail</span>
+                    <strong className="text-blue-400">{selectedTigerCaptures.length} Observations</strong>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Map Sidebar / Territory Overlaps Panel */}
+          {/* Right Column: GIS Legend & Overlaps Panel (3 cols) */}
           <div className="lg:col-span-3 space-y-4">
             {/* Territory Overlaps Widget */}
             <div className="p-5 bg-slate-900 border border-slate-800 rounded-2xl space-y-4 shadow-xl">
@@ -119,43 +188,95 @@ export const MapPage: React.FC = () => {
               </div>
 
               <p className="text-xs text-slate-400 leading-relaxed">
-                Overlapping activity areas between adjacent dominant tigers. Overlap signals territorial conflict risk.
+                Overlapping activity areas between adjacent dominant tigers. Shared stations indicate territorial contact risk.
               </p>
 
               <div className="space-y-3">
-                {overlaps.map((ov) => (
-                  <div key={ov.id} className="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-1.5 font-bold">
-                        <span className="text-amber-400">{ov.primaryTigerId}</span>
-                        <span className="text-slate-500">↔</span>
-                        <span className="text-blue-400">{ov.neighborTigerId}</span>
+                {overlaps.length === 0 ? (
+                  <div className="text-xs text-slate-500">No overlaps detected.</div>
+                ) : (
+                  overlaps.map((ov) => (
+                    <div key={ov.id} className="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+                      <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-1.5 font-bold">
+                          <span className="text-amber-400">{ov.primaryTigerId}</span>
+                          <span className="text-slate-500">↔</span>
+                          <span className="text-blue-400">{ov.neighborTigerId}</span>
+                        </div>
+                        <span className="font-mono text-amber-400 font-bold">{ov.overlapAreaSqKm} sq km</span>
                       </div>
-                      <span className="font-mono text-amber-400 font-bold">{ov.overlapAreaSqKm} sq km</span>
+                      <div className="text-[11px] text-slate-400">
+                        Shared Station: <span className="text-slate-200">{ov.sharedStationIds.join(', ')}</span>
+                      </div>
                     </div>
-                    <div className="text-[11px] text-slate-400">
-                      Shared Station: <span className="text-slate-200">{ov.sharedStationIds.join(', ')}</span>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
-            {/* Station Legend */}
-            <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl space-y-2 text-xs">
-              <h4 className="font-bold text-white font-heading">Map Station Legend</h4>
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-emerald-500 border border-slate-950"></span>
-                  <span className="text-slate-300">Core Forest Stations</span>
+            {/* Comprehensive GIS Legend */}
+            <div className="p-5 bg-slate-900 border border-slate-800 rounded-2xl space-y-3 text-xs shadow-xl">
+              <h4 className="font-bold text-white font-heading flex items-center gap-2">
+                <Layers className="w-4 h-4 text-amber-400" /> GIS Layer Legend
+              </h4>
+
+              <div className="space-y-2 text-slate-300">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-emerald-500 border border-slate-950"></span>
+                    <span>Core Forest Station</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500">CORE</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-amber-500 border border-slate-950"></span>
-                  <span className="text-slate-300">Buffer Zone Stations</span>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-amber-500 border border-slate-950"></span>
+                    <span>Buffer Zone Station</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500">BUFFER</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-red-500 border border-slate-950"></span>
-                  <span className="text-slate-300">Village-Adjacent Border Posts</span>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-red-500 border border-slate-950"></span>
+                    <span>Village-Border Station</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500">BORDER</span>
+                </div>
+
+                <div className="flex items-center justify-between pt-1 border-t border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded-full bg-amber-500 text-slate-950 font-bold text-[9px] flex items-center justify-center">
+                      14
+                    </span>
+                    <span>Activity Centroid</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-amber-400">Tiger ID</span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3.5 h-3.5 rounded bg-amber-500/20 border border-dashed border-amber-400"></span>
+                    <span>Occupied Area Geometry</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500">GeoJSON</span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3.5 h-3.5 rounded-full bg-blue-500 border border-slate-950"></span>
+                    <span>Capture Observation</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-blue-400">Point</span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-0.5 border-t-2 border-dashed border-blue-400"></span>
+                    <span>Chronological Path</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-blue-400">Trail</span>
                 </div>
               </div>
             </div>
