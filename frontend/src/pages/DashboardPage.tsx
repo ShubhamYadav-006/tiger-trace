@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Image,
   Cat,
@@ -10,13 +9,11 @@ import {
   FileCheck,
   RefreshCw,
   Clock,
-  FolderOpen,
-  History,
-  ArrowRight,
   AlertCircle,
+  Upload,
+  ShieldCheck,
 } from 'lucide-react';
 import { StatCard } from '../components/common/StatCard';
-import { StatusBadge } from '../components/common/StatusBadge';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
 import { ErrorBanner } from '../components/common/ErrorBanner';
 import { useDashboard } from '../hooks/useDashboard';
@@ -27,13 +24,52 @@ import type { MovementAlert } from '../types/alert';
 import type { ReviewItem } from '../types/review';
 
 export const DashboardPage: React.FC = () => {
-  const navigate = useNavigate();
   const { stats, loading, error, refresh } = useDashboard();
   const { runs, createRun, refresh: refreshRuns } = useRuns();
 
   const [folderPath, setFolderPath] = useState('E:\\FieldData\\Pench_SDCard_Batch08');
   const [isStarting, setIsStarting] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUploadClick = async () => {
+    if ('showDirectoryPicker' in window) {
+      try {
+        // @ts-expect-error Native File System Access API in modern browsers
+        const dirHandle = await window.showDirectoryPicker();
+        if (dirHandle && dirHandle.name) {
+          setFolderPath(`E:\\FieldData\\${dirHandle.name}`);
+          return;
+        }
+      } catch {
+        // User cancelled or browser rejected dialog; fallback to file input click
+      }
+    }
+    fileInputRef.current?.click();
+  };
+
+  const handleFolderSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const firstFile = files[0];
+      const fullPath = (firstFile as unknown as { path?: string }).path;
+      if (fullPath) {
+        const lastSlash = Math.max(fullPath.lastIndexOf('\\'), fullPath.lastIndexOf('/'));
+        if (lastSlash !== -1) {
+          const folderDir = fullPath.substring(0, lastSlash);
+          setFolderPath(folderDir);
+          return;
+        }
+      }
+
+      const relativePath = firstFile.webkitRelativePath;
+      if (relativePath) {
+        const folderName = relativePath.split('/')[0];
+        setFolderPath(`E:\\FieldData\\${folderName}`);
+      }
+    }
+  };
 
   const [alerts, setAlerts] = useState<MovementAlert[]>([]);
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
@@ -75,7 +111,6 @@ export const DashboardPage: React.FC = () => {
   };
 
   const activeRun = runs.find((r) => r.status === 'IN_PROGRESS');
-  const recentRuns = runs.slice(0, 3);
 
   const isLoading = loading || secondaryLoading;
 
@@ -104,23 +139,43 @@ export const DashboardPage: React.FC = () => {
       <div className="p-6 bg-slate-900 border border-slate-800 rounded-xl space-y-5 shadow-lg">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-white font-heading uppercase tracking-wider flex items-center gap-2">
-            <FolderOpen className="w-4 h-4 text-amber-400" />
-            Start New Camera Trap Ingestion Batch
+            <div className="w-5 h-5 rounded bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-sm">
+              <ShieldCheck className="w-3.5 h-3.5 text-slate-950 font-bold" />
+            </div>
+            Import Camera Images
           </h2>
         </div>
 
         <form onSubmit={handleStartRun} className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <FolderOpen className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFolderSelect}
+            className="hidden"
+            // @ts-expect-error webkitdirectory is a non-standard attribute supported by modern browsers
+            webkitdirectory=""
+            directory=""
+          />
+
+          <div className="flex-1 flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-lg p-1.5 focus-within:border-amber-500/60 transition-colors">
+            <button
+              type="button"
+              onClick={handleUploadClick}
+              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 font-semibold text-xs rounded-md border border-slate-700 flex items-center gap-2 transition-colors cursor-pointer shrink-0 shadow-sm"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              Upload folder
+            </button>
             <input
               type="text"
               value={folderPath}
               onChange={(e) => setFolderPath(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-xs text-slate-200 font-mono focus:outline-none focus:border-amber-500/60"
-              placeholder="E:\FieldData\CameraTrap_Batch"
+              className="w-full bg-transparent border-none py-1 px-2 text-xs text-slate-200 font-mono focus:outline-none placeholder:text-slate-600"
+              placeholder="Select folder or enter path e.g. E:\FieldData\Batch08"
               disabled={isStarting}
             />
           </div>
+
           <button
             type="submit"
             disabled={isStarting || !folderPath.trim()}
@@ -143,60 +198,36 @@ export const DashboardPage: React.FC = () => {
 
         {/* Live Active Processing Status Widget */}
         {activeRun ? (
-          <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <RefreshCw className="w-4 h-4 text-amber-400 animate-spin" />
-                <span className="text-xs font-bold text-white font-heading">
-                  Active Processing: {activeRun.name}
-                </span>
-                <span className="text-[10px] font-mono text-amber-400">({activeRun.id})</span>
-              </div>
-              <StatusBadge label={activeRun.status} variant="warning" size="sm" />
+          <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl space-y-2">
+            <div className="flex items-center justify-between text-xs font-semibold">
+              <span className="text-amber-400 flex items-center gap-2">
+                {activeRun.status === 'IN_PROGRESS' && (
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-amber-400" />
+                )}
+                {activeRun.status === 'COMPLETED'
+                  ? 'Completed'
+                  : activeRun.status === 'IN_PROGRESS'
+                  ? 'Processing..'
+                  : '0'}
+              </span>
+              <span className="text-white font-mono font-bold">{activeRun.progressPercentage}%</span>
             </div>
-
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-amber-300 font-medium">
-                  Pipeline Stage: {activeRun.currentStage}
-                </span>
-                <span className="text-white font-mono font-bold">{activeRun.progressPercentage}%</span>
-              </div>
-              <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
-                <div
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-300"
-                  style={{ width: `${activeRun.progressPercentage}%` }}
-                ></div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-2 pt-1 text-[11px]">
-              <div>
-                <span className="text-slate-400">Total Frames:</span>{' '}
-                <span className="font-mono font-bold text-white">{activeRun.totalImages.toLocaleString()}</span>
-              </div>
-              <div>
-                <span className="text-slate-400">Blanks Filtered:</span>{' '}
-                <span className="font-mono font-bold text-emerald-400">{activeRun.blankImagesCount.toLocaleString()}</span>
-              </div>
-              <div>
-                <span className="text-slate-400">Tigers Detected:</span>{' '}
-                <span className="font-mono font-bold text-amber-400">{activeRun.tigerDetectionsCount}</span>
-              </div>
+            <div className="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
+              <div
+                className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-300"
+                style={{ width: `${activeRun.progressPercentage}%` }}
+              ></div>
             </div>
           </div>
         ) : (
-          <div className="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
-            <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Active Engine Idle — Standing by for camera-trap SD card batch ingestion.
-            </span>
-            <button
-              onClick={() => navigate('/processing')}
-              className="text-[11px] text-amber-400 hover:text-amber-300 flex items-center gap-1 font-medium transition-colors cursor-pointer"
-            >
-              <History className="w-3.5 h-3.5" /> View Processing History
-            </button>
+          <div className="p-4 bg-slate-950/60 border border-slate-800 rounded-xl space-y-2">
+            <div className="flex items-center justify-between text-xs font-semibold">
+              <span className="text-slate-400">0</span>
+              <span className="text-slate-500 font-mono font-bold">0%</span>
+            </div>
+            <div className="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
+              <div className="bg-slate-800 h-full rounded-full w-0"></div>
+            </div>
           </div>
         )}
       </div>
@@ -220,7 +251,6 @@ export const DashboardPage: React.FC = () => {
             subtitle="Raw Field SD Cards"
             icon={Image}
             color="blue"
-            trend="All Survey Runs"
           />
           <StatCard
             title="Blank Images (Quarantined)"
@@ -228,7 +258,6 @@ export const DashboardPage: React.FC = () => {
             subtitle="False Triggers Isolated"
             icon={Layers}
             color="emerald"
-            trend={`${stats ? ((stats.blankImagesCount / (stats.totalImagesProcessed || 1)) * 100).toFixed(1) : 0}% Filtered`}
           />
           <StatCard
             title="Relevant / Subject Images"
@@ -236,7 +265,6 @@ export const DashboardPage: React.FC = () => {
             subtitle="Wildlife & Activity Frames"
             icon={FileCheck}
             color="amber"
-            trend="Passed to Species Model"
           />
           <StatCard
             title="Tiger Detections"
@@ -244,87 +272,30 @@ export const DashboardPage: React.FC = () => {
             subtitle="Tiger Subject Images"
             icon={Cat}
             color="orange"
-            trend="Extracted for Re-ID"
           />
         </div>
       </div>
 
-      {/* Row 2: Intelligence & Recent History Preview */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left: Intelligence & Field Review */}
-        <div className="lg:col-span-5 space-y-3">
-          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-            Field Review & Signal Signals
-          </h2>
-          <div className="grid grid-cols-1 gap-4">
-            <StatCard
-              title="Images Requiring Review"
-              value={stats ? stats.imagesRequiringReviewCount : reviews.length}
-              subtitle="Ambiguous Flank Matches"
-              icon={UserCheck}
-              color="purple"
-              trend="Confidence < 0.85"
-            />
-            <StatCard
-              title="Active Movement Alerts"
-              value={stats ? stats.activeAlertsCount : alerts.filter((a) => !a.isAcknowledged).length}
-              subtitle="Unacknowledged Deviations"
-              icon={AlertTriangle}
-              color="red"
-              trend="Actionable Field Signals"
-            />
-          </div>
-        </div>
-
-        {/* Right: Recent Ingestion Runs History */}
-        <div className="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4 shadow-lg flex flex-col justify-between">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                <History className="w-4 h-4 text-amber-400" />
-                Recent Ingestion Runs
-              </h2>
-              <span className="text-xs text-slate-400">{runs.length} Total Runs Saved</span>
-            </div>
-
-            <div className="space-y-2">
-              {recentRuns.map((r) => (
-                <div
-                  key={r.id}
-                  onClick={() => navigate('/processing')}
-                  className="p-3 bg-slate-950 border border-slate-800 rounded-lg hover:border-amber-500/40 transition-colors cursor-pointer flex items-center justify-between"
-                >
-                  <div className="space-y-0.5">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-white">{r.name}</span>
-                      <StatusBadge
-                        label={r.status}
-                        variant={r.status === 'COMPLETED' ? 'success' : r.status === 'FAILED' ? 'critical' : 'warning'}
-                        size="sm"
-                      />
-                    </div>
-                    <p className="text-[11px] text-slate-400 font-mono">{r.folderPath}</p>
-                  </div>
-
-                  <div className="text-right flex items-center gap-3">
-                    <div className="text-xs font-mono">
-                      <span className="text-amber-400 font-bold">{r.tigerDetectionsCount}</span>{' '}
-                      <span className="text-slate-500">Tigers</span>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-slate-500" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <button
-            onClick={() => navigate('/processing')}
-            className="w-full py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-amber-300 border border-slate-700 transition-colors flex items-center justify-center gap-2 cursor-pointer mt-2"
-          >
-            <History className="w-4 h-4" />
-            Open Full Processing History & Quarantine Manager
-          </button>
+      {/* Row 2: Intelligence & Field Review */}
+      <div>
+        <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+          Field Review & Signal Signals
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <StatCard
+            title="Images Requiring Review"
+            value={stats ? stats.imagesRequiringReviewCount : reviews.length}
+            subtitle="Ambiguous Flank Matches"
+            icon={UserCheck}
+            color="purple"
+          />
+          <StatCard
+            title="Active Movement Alerts"
+            value={stats ? stats.activeAlertsCount : alerts.filter((a) => !a.isAcknowledged).length}
+            subtitle="Unacknowledged Deviations"
+            icon={AlertTriangle}
+            color="red"
+          />
         </div>
       </div>
     </div>
