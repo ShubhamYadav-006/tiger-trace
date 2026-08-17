@@ -419,6 +419,29 @@ export const MOCK_ALERTS: MovementAlert[] = [
     },
     isAcknowledged: true,
     acknowledgedAt: '2026-08-16T14:30:00Z'
+  },
+  {
+    id: 'ALT-304',
+    tigerId: 'T-008',
+    tigerName: 'Pench Dominant Male (Raja)',
+    tigerThumbnail: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&w=200&q=80',
+    type: 'NEW_STATION',
+    severity: 'INFO',
+    title: 'First Detection at Awarghani Buffer Station',
+    timestamp: '2026-08-17T09:10:00Z',
+    stationName: 'Awarghani Buffer Trail (AG-B02)',
+    latitude: 21.6500,
+    longitude: 79.3180,
+    evidence: {
+      whatChanged: 'First recorded detection at station AG-B02 where T-008 has never been previously logged.',
+      previousState: 'Recorded exclusively at Pench River Bank East and Karmajhiri Core.',
+      currentState: 'New station log recorded at AG-B02 with 94% flank similarity match.',
+      supportingCapturesCount: 2,
+      surveyEffortStatus: 'ADEQUATE',
+      confidenceLevel: 'HIGH',
+      stationName: 'Awarghani Buffer Trail'
+    },
+    isAcknowledged: false
   }
 ];
 
