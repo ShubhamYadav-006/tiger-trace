@@ -2,16 +2,12 @@ import React, { useState } from 'react';
 import {
   FolderOpen,
   Play,
-  CheckCircle2,
   RefreshCw,
   Shield,
   Layers,
   RotateCcw,
-  Clock,
   AlertCircle,
-  XCircle,
   Search,
-  ChevronRight,
 } from 'lucide-react';
 import { StatusBadge } from '../components/common/StatusBadge';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
@@ -19,7 +15,7 @@ import { ErrorBanner } from '../components/common/ErrorBanner';
 import { EmptyState } from '../components/common/EmptyState';
 import { useRuns } from '../hooks/useRuns';
 import { getQuarantinedImages, restoreQuarantinedImage } from '../services/runs';
-import type { PipelineStage, QuarantinedImage, RunStatus } from '../types/run';
+import type { QuarantinedImage, RunStatus } from '../types/run';
 
 export const ProcessingPage: React.FC = () => {
   const { runs, selectedRun, loading, error, selectRun, createRun, refresh } = useRuns();
@@ -91,14 +87,7 @@ export const ProcessingPage: React.FC = () => {
     }
   };
 
-  const pipelineStages: { stage: PipelineStage; label: string; desc: string }[] = [
-    { stage: 'INGESTION', label: '1. Metadata Ingestion', desc: 'Read SD card timestamps & station EXIF' },
-    { stage: 'BLANK_FILTERING', label: '2. Blank Filtering', desc: 'Isolate heat shimmer, moving grass & blanks' },
-    { stage: 'TIGER_DETECTION', label: '3. Tiger Detection', desc: 'MegaDetector object crop' },
-    { stage: 'INDIVIDUAL_REID', label: '4. Tiger Re-ID', desc: 'Stripe feature extraction & similarity matching' },
-    { stage: 'SPATIAL_ANALYSIS', label: '5. Spatial Intelligence', desc: 'Update centroids & occupied area' },
-    { stage: 'ALERT_GENERATION', label: '6. Alert Engine', desc: 'Evaluate range shift & movement rules' },
-  ];
+
 
   const filteredRuns = runs.filter((r) => {
     const matchesStatus = statusFilter === 'ALL' || r.status === statusFilter;
@@ -357,25 +346,7 @@ export const ProcessingPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Timestamps */}
-                    <div className="grid grid-cols-2 gap-3 p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs">
-                      <div>
-                        <span className="text-slate-400 flex items-center gap-1">
-                          <Clock className="w-3.5 h-3.5 text-amber-400" /> Start Time:
-                        </span>
-                        <div className="font-mono text-slate-200 font-medium mt-0.5">
-                          {formatDateTime(selectedRun.startTime)}
-                        </div>
-                      </div>
-                      <div>
-                        <span className="text-slate-400 flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Completion Time:
-                        </span>
-                        <div className="font-mono text-slate-200 font-medium mt-0.5">
-                          {selectedRun.completionTime ? formatDateTime(selectedRun.completionTime) : selectedRun.status === 'IN_PROGRESS' ? 'Running...' : 'N/A'}
-                        </div>
-                      </div>
-                    </div>
+
 
                     {/* Progress Bar */}
                     <div className="space-y-1.5">
@@ -395,46 +366,7 @@ export const ProcessingPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Pipeline Stage Stepper */}
-                    <div className="space-y-2">
-                      <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        Pipeline Stage Execution
-                      </h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        {pipelineStages.map((st) => {
-                          const isCompleted = selectedRun.status === 'COMPLETED';
-                          const isFailed = selectedRun.status === 'FAILED';
-                          return (
-                            <div
-                              key={st.stage}
-                              className={`p-3 rounded-lg border flex items-start gap-2.5 text-xs ${
-                                isCompleted
-                                  ? 'bg-slate-950/70 border-slate-800 text-slate-300'
-                                  : isFailed && selectedRun.currentStage === st.stage
-                                  ? 'bg-red-500/10 border-red-500/30 text-red-300'
-                                  : selectedRun.currentStage === st.stage
-                                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-300 animate-pulse'
-                                  : 'bg-slate-950/40 border-slate-800/60 text-slate-400 opacity-60'
-                              }`}
-                            >
-                              {isCompleted ? (
-                                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                              ) : isFailed && selectedRun.currentStage === st.stage ? (
-                                <XCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                              ) : selectedRun.currentStage === st.stage ? (
-                                <RefreshCw className="w-4 h-4 text-amber-400 shrink-0 mt-0.5 animate-spin" />
-                              ) : (
-                                <ChevronRight className="w-4 h-4 text-slate-600 shrink-0 mt-0.5" />
-                              )}
-                              <div>
-                                <div className="font-bold text-white">{st.label}</div>
-                                <div className="text-[11px] text-slate-400 leading-tight">{st.desc}</div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
+
 
                     {/* Detailed Stats Grid (Task 2 Field List) */}
                     <div className="space-y-2">
