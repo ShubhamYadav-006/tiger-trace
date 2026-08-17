@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, ArrowRight, MapPin, Compass } from 'lucide-react';
+import { Search, Filter, ArrowRight, MapPin, Compass, Calendar, Camera } from 'lucide-react';
 import { getTigers } from '../services/tigers';
 import type { Tiger } from '../types/tiger';
 import { StatusBadge } from '../components/common/StatusBadge';
 import { LoadingSkeleton } from '../components/common/LoadingSkeleton';
+import { EmptyState } from '../components/common/EmptyState';
 
 export const TigersPage: React.FC = () => {
   const navigate = useNavigate();
   const [tigers, setTigers] = useState<Tiger[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string>('ALL');
+  const [selectedGender, setSelectedGender] = useState<string>('ALL');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,11 +32,24 @@ export const TigersPage: React.FC = () => {
       t.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = selectedStatus === 'ALL' || t.status === selectedStatus;
-    return matchesSearch && matchesStatus;
+    const matchesGender = selectedGender === 'ALL' || t.gender === selectedGender;
+    return matchesSearch && matchesStatus && matchesGender;
   });
 
+  const formatDate = (dateStr: string) => {
+    try {
+      return new Date(dateStr).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6">
       {/* Header Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -42,7 +57,7 @@ export const TigersPage: React.FC = () => {
             Individual Tiger Catalogue
           </h1>
           <p className="text-xs text-slate-400">
-            Persistent individual database of identified tigers in Pench Tiger Reserve.
+            Persistent database of verified individual tigers in Pench Tiger Reserve.
           </p>
         </div>
 
@@ -72,11 +87,35 @@ export const TigersPage: React.FC = () => {
               <option value="MISSING" className="bg-slate-900">Missing</option>
             </select>
           </div>
+
+          <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-300">
+            <select
+              value={selectedGender}
+              onChange={(e) => setSelectedGender(e.target.value)}
+              className="bg-transparent focus:outline-none text-xs text-slate-200 cursor-pointer"
+            >
+              <option value="ALL" className="bg-slate-900">All Genders</option>
+              <option value="MALE" className="bg-slate-900">Male</option>
+              <option value="FEMALE" className="bg-slate-900">Female</option>
+            </select>
+          </div>
         </div>
       </div>
 
       {loading ? (
-        <LoadingSkeleton count={4} height="h-64" />
+        <LoadingSkeleton type="card" count={6} />
+      ) : filteredTigers.length === 0 ? (
+        <EmptyState
+          icon={Search}
+          title="No Tiger Records Found"
+          description="No individual tigers match your search or filter criteria."
+          actionLabel="Clear Filters"
+          onAction={() => {
+            setSearchQuery('');
+            setSelectedStatus('ALL');
+            setSelectedGender('ALL');
+          }}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredTigers.map((t) => (
@@ -120,7 +159,7 @@ export const TigersPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Tiger Details */}
+                {/* Tiger Details Grid */}
                 <div className="p-5 space-y-3">
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className="p-2.5 bg-slate-950 rounded-lg border border-slate-800">
@@ -128,15 +167,33 @@ export const TigersPage: React.FC = () => {
                       <div className="font-semibold text-slate-200 mt-0.5">{t.gender} • {t.estimatedAge}</div>
                     </div>
                     <div className="p-2.5 bg-slate-950 rounded-lg border border-slate-800">
-                      <div className="text-slate-500 text-[10px] uppercase font-semibold">Total Captures</div>
+                      <div className="text-slate-500 text-[10px] uppercase font-semibold flex items-center gap-1">
+                        <Camera className="w-3 h-3 text-amber-400" /> Captures
+                      </div>
                       <div className="font-bold text-amber-400 font-mono mt-0.5">{t.totalCaptures} Frames</div>
+                    </div>
+                  </div>
+
+                  {/* First Seen & Last Seen Dates */}
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="p-2.5 bg-slate-950 rounded-lg border border-slate-800">
+                      <div className="text-slate-500 text-[10px] uppercase font-semibold flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-blue-400" /> First Seen
+                      </div>
+                      <div className="font-mono text-slate-300 text-[11px] mt-0.5">{formatDate(t.firstSeen)}</div>
+                    </div>
+                    <div className="p-2.5 bg-slate-950 rounded-lg border border-slate-800">
+                      <div className="text-slate-500 text-[10px] uppercase font-semibold flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-emerald-400" /> Last Seen
+                      </div>
+                      <div className="font-mono text-slate-300 text-[11px] mt-0.5">{formatDate(t.lastSeen)}</div>
                     </div>
                   </div>
 
                   <div className="space-y-1.5 text-xs text-slate-300">
                     <div className="flex items-center gap-2">
                       <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                      <span className="truncate">Last Seen: <strong className="text-white">{t.lastStation}</strong></span>
+                      <span className="truncate">Last Station: <strong className="text-white">{t.lastStation}</strong></span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Compass className="w-3.5 h-3.5 text-slate-500 shrink-0" />
@@ -148,8 +205,8 @@ export const TigersPage: React.FC = () => {
 
               {/* Card Footer Button */}
               <div className="px-5 pb-5 pt-0">
-                <button className="w-full py-2.5 bg-slate-800 group-hover:bg-amber-500 group-hover:text-slate-950 text-xs font-bold text-slate-200 rounded-xl transition-all flex items-center justify-center gap-2">
-                  View Tiger Profile & Movement History
+                <button className="w-full py-2.5 bg-slate-800 group-hover:bg-amber-500 group-hover:text-slate-950 text-xs font-bold text-slate-200 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer">
+                  View Profile & Movement Trajectory
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>

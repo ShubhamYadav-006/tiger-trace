@@ -138,7 +138,7 @@ export const MOCK_CAPTURES: Record<string, TigerCapture[]> = {
       id: 'CAP-1001',
       tigerId: 'T-014',
       stationId: 'CS-102',
-      stationName: 'Karmajhiri Core 02',
+      stationName: 'Karmajhiri Core 02 (KJ-C02)',
       latitude: 21.6920,
       longitude: 79.3350,
       timestamp: '2026-08-17T11:15:00Z',
@@ -151,7 +151,7 @@ export const MOCK_CAPTURES: Record<string, TigerCapture[]> = {
       id: 'CAP-1002',
       tigerId: 'T-014',
       stationId: 'CS-101',
-      stationName: 'Karmajhiri Core 01',
+      stationName: 'Karmajhiri Core 01 (KJ-C01)',
       latitude: 21.6850,
       longitude: 79.3210,
       timestamp: '2026-08-16T23:40:00Z',
@@ -164,7 +164,7 @@ export const MOCK_CAPTURES: Record<string, TigerCapture[]> = {
       id: 'CAP-1003',
       tigerId: 'T-014',
       stationId: 'CS-105',
-      stationName: 'Pench River Bank East',
+      stationName: 'Pench River Bank East (PR-E01)',
       latitude: 21.6700,
       longitude: 79.3550,
       timestamp: '2026-08-14T04:12:00Z',
@@ -173,12 +173,39 @@ export const MOCK_CAPTURES: Record<string, TigerCapture[]> = {
       reviewStatus: 'AUTO_APPROVED'
     }
   ],
+  'T-008': [
+    {
+      id: 'CAP-0081',
+      tigerId: 'T-008',
+      stationId: 'CS-105',
+      stationName: 'Pench River Bank East (PR-E01)',
+      latitude: 21.6700,
+      longitude: 79.3550,
+      timestamp: '2026-08-17T10:00:00Z',
+      imageUrl: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&w=800&q=80',
+      flankCropUrl: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&w=400&q=80',
+      confidence: 0.98,
+      reviewStatus: 'AUTO_APPROVED'
+    },
+    {
+      id: 'CAP-0082',
+      tigerId: 'T-008',
+      stationId: 'CS-102',
+      stationName: 'Karmajhiri Core 02 (KJ-C02)',
+      latitude: 21.6920,
+      longitude: 79.3350,
+      timestamp: '2026-08-15T19:30:00Z',
+      imageUrl: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?auto=format&fit=crop&w=800&q=80',
+      confidence: 0.95,
+      reviewStatus: 'AUTO_APPROVED'
+    }
+  ],
   'T-021': [
     {
       id: 'CAP-2001',
       tigerId: 'T-021',
       stationId: 'CS-104',
-      stationName: 'Khawasa Buffer Ridge',
+      stationName: 'Khawasa Buffer Ridge (KW-B01)',
       latitude: 21.6150,
       longitude: 79.2950,
       timestamp: '2026-08-17T08:20:00Z',
@@ -191,13 +218,42 @@ export const MOCK_CAPTURES: Record<string, TigerCapture[]> = {
       id: 'CAP-2002',
       tigerId: 'T-021',
       stationId: 'CS-103',
-      stationName: 'Touria Gate West',
+      stationName: 'Touria Gate West (TR-W01)',
       latitude: 21.6420,
       longitude: 79.3100,
       timestamp: '2026-08-16T18:45:00Z',
       imageUrl: 'https://images.unsplash.com/photo-1534188753412-3e26d0d618d6?auto=format&fit=crop&w=800&q=80',
       confidence: 0.91,
       reviewStatus: 'AUTO_APPROVED'
+    }
+  ],
+  'T-035': [
+    {
+      id: 'CAP-3501',
+      tigerId: 'T-035',
+      stationId: 'CS-106',
+      stationName: 'Gumtara Range North (GT-N01)',
+      latitude: 21.7200,
+      longitude: 79.3400,
+      timestamp: '2026-08-15T14:10:00Z',
+      imageUrl: 'https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?auto=format&fit=crop&w=800&q=80',
+      flankCropUrl: 'https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?auto=format&fit=crop&w=400&q=80',
+      confidence: 0.97,
+      reviewStatus: 'AUTO_APPROVED'
+    }
+  ],
+  'T-042': [
+    {
+      id: 'CAP-4201',
+      tigerId: 'T-042',
+      stationId: 'CS-108',
+      stationName: 'Sillari Border Post (SL-V01)',
+      latitude: 21.6050,
+      longitude: 79.3500,
+      timestamp: '2026-07-28T16:00:00Z',
+      imageUrl: 'https://images.unsplash.com/photo-1534188753412-3e26d0d618d6?auto=format&fit=crop&w=800&q=80',
+      confidence: 0.89,
+      reviewStatus: 'HUMAN_CONFIRMED'
     }
   ]
 };
